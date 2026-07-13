@@ -1,4 +1,4 @@
-﻿# AI-QA-Assistant-AiQA
+﻿# AiQA-AI-QA-Assistant
 
 AI-powered Test Case Generator for QA Engineers.
 
@@ -80,6 +80,19 @@ Example request:
 - Jira integration
 - Authentication
 - Docker support
+
+## Topics
+
+- Python
+- FastAPI
+- Google Gemini
+- REST API
+- AI
+- LLM
+- QA Automation
+- Software Testing
+- Test Case Generation
+- SQLite
 
 ## Author
 Reetika Srivastava
