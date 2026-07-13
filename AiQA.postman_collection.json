@@ -1,0 +1,23 @@
+{
+  "info": {
+    "_postman_id": "b191d9cb-74c1-428b-8e7b-d5bc00b05331",
+    "name": "AiQA",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55678111"
+  },
+  "item": [
+    {
+      "name": "200 OK",
+      "item": [
+        {
+          "name": "Check_Health_Point",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
