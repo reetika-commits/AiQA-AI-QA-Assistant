@@ -1,0 +1,12 @@
+{
+  "title": "User Login",
+  "description": "User should be able to login using email and password.",
+  "acceptance_criteria": [
+    "Email is mandatory",
+    "Password is mandatory",
+    "Remember Me option",
+    "Forgot Password link",
+    "Invalid credentials message",
+    "Redirect to dashboard on successful login"
+  ]
+}

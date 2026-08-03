@@ -1,5 +1,9 @@
 from pydantic import BaseModel
 
 class ResponseBody(BaseModel):
-    features: str 
-    test_case: int 
+        Test_Case_ID: int
+        Title: str
+        Preconditions: str
+        Test_Steps: str
+        Expected_Result : str
+        Priority : str

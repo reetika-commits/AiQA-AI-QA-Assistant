@@ -1,0 +1,14 @@
+{
+  "title": "User Registration",
+  "description": "The application should allow a new user to register using Name, Email, Password, and Confirm Password. Registration should succeed only when all mandatory fields are valid.",
+  "acceptance_criteria": [
+    "Name is mandatory",
+    "Email is mandatory",
+    "Password is mandatory",
+    "Invalid credentials message",
+    "Password mismatch",
+    "Duplicate email",
+    "Weak Password",
+    "successful registration message"
+  ]
+}
