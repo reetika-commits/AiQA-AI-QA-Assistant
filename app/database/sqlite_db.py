@@ -24,6 +24,7 @@ def create_tables(cursor):
                     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                     model_used TEXT NOT NULL,
                     status TEXT
+                    provider TEXT
                 )''')
     #print("Table 'story' created successfully")
     cursor.execute('''CREATE TABLE IF NOT EXISTS testcase (
@@ -39,19 +40,32 @@ def create_tables(cursor):
                  )''')
 
 def insert_data(cursor, story,testcase_details):
+    story_id=insert_story(cursor, story, get_model_used(), get_status(testcase_details), get_provider())
+    for data in testcase_details:
+        inser_testcase(cursor,story_id, data['title'], data['preconditions'], data['test_steps'], data['expected_result'], data['priority'])
+
+def get_status(testcase_details):
     status = "Failed"
     if testcase_details:
         status="Success"
-    story_id=insert_story(cursor,story, settings.AI_PROVIDER,status)
-    for data in testcase_details:
-        inser_testcase(cursor,story_id, data['title'], data['preconditions'], data['test_steps'], data['expected_result'], data['priority'])
+    return status
+
+def get_model_used():
+    if settings.AI_PROVIDER=="ollama":
+        model_used=settings.OLLAMA_MODEL
+    elif settings.AI_PROVIDER=="huggingface":
+        model_used=settings.HF_MODEL
+    return model_used
+
+def get_provider():
+    return settings.AI_PROVIDER
     
  
-def insert_story(cursor, story, model,success):
+def insert_story(cursor, story, model_used, success, provider):
     cursor.execute(''' INSERT INTO story(
-    title, model_used, status)
-    VALUES (?,?,?)
-    ''',(story,model,success))
+    title, model_used, status, provider)
+    VALUES (?,?,?,?)
+    ''',(story,model_used,success, provider))
 
     return cursor.lastrowid #
 

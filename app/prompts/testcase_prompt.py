@@ -24,6 +24,9 @@ def prompt_builder(request):
         Generate comprehensive test cases for the following requirement.
         Requirement:{request}
         Return ONLY valid JSON.
+        The root object MUST contain a key named "testcases".
+        Do NOT return a single testcase object.
+        The response MUST exactly follow this schema:
         {json_template}
         Rules:
         1. Generate one JSON object for each test case.

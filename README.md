@@ -2,112 +2,157 @@
 
 AI-powered Test Case Generator for QA Engineers.
 
+# ✨ Hugging Face AI Provider Integration
+
 ## Overview
-AiQA is a REST API built with FastAPI that uses Google's Gemini LLM to generate software test cases from plain English requirements. The application accepts a requirement, sends it to Gemini, receives structured test cases, and stores the request and response for future reference.
 
-SQLite Integration & Postman Testing ✅
+Added *Hugging Face* as the second AI provider for the AIQA Assistant.
 
-## Features Implemented
+The application now supports both *local* and *cloud* Large Language Models through a common service layer. AI providers can be switched by changing a single environment variable without modifying the application code.
 
-### SQLite Database Integration
-- Created SQLite database for persistent storage.
-- Designed relational database with two tables:
-  - *story*
-  - *testcase*
-- Established one-to-many relationship using story_id.
+---
 
-### Story Table
-Stores information about each AI request.
+# Features
 
-| Column | Description |
-|---------|-------------|
-| story_id | Primary Key |
-| title | User requirement/story |
-| model_used | AI model used to generate test cases |
-| status | Success/Failed |
-| created_at | Timestamp |
+- Added Hugging Face cloud integration
+- Created huggingface_service.py
+- Used huggingface_hub.InferenceClient
+- Added provider selection using AI_PROVIDER
+- Stored API key securely in .env
+- Configured model name through environment variables
+- Successfully generated test cases using Hugging Face hosted models
+- Saved generated test cases into SQLite database
+- Added provider tracking in Story table
+- Improved architecture for supporting multiple AI providers
 
-### Testcase Table
-Stores generated test cases.
+---
 
-| Column | Description |
-|---------|-------------|
-| testcase_id | Primary Key |
-| story_id | Foreign Key |
-| title | Test case title |
-| preconditions | Preconditions |
-| test_steps | Test execution steps |
-| expected_result | Expected result |
-| priority | Test priority |
+# Environment Variables
 
-## Functionality Added
+env
+AI_PROVIDER=huggingface
 
-- SQLite database connection
-- Automatic table creation
-- Story insertion
-- Test case insertion
-- Status tracking (Success / Failed)
-- Model name stored with each execution
+OLLAMA_MODEL=qwen2.5:3b
 
-## API Flow
+HF_API_KEY=your_huggingface_api_key
+HF_MODEL=Qwen/Qwen3-Coder-30B-A3B-Instruct
 
 
-Client
-   │
-   ▼
-FastAPI Route
-   │
-   ▼
+---
+
+# Supported AI Providers
+
+| Provider | Type | Status |
+|----------|------|--------|
+| Ollama | Local LLM | ✅ Completed |
+| Hugging Face | Cloud LLM | ✅ Completed |
+| LangChain | Framework | 🚧 Coming Next |
+
+---
+
+# Architecture
+
+
+API Request
+      │
+      ▼
 AI Service
-   │
-   ▼
-Ollama Service
-   │
-   ▼
-Prompt Builder
-   │
-   ▼
-Ollama Model
-   │
-   ▼
-JSON Response
-   │
-   ▼
+      │
+      ▼
+AI Provider Selection
+      │
+ ┌────┴─────────────┐
+ │                  │
+ ▼                  ▼
+Ollama        Hugging Face
+ │                  │
+ └──────┬───────────┘
+        ▼
+ JSON Response
+        ▼
 SQLite Database
 
 
-## Testing
+---
 
-### Swagger UI
-- Successfully generated AI test cases.
-- Verified database insertion.
+# Database Updates
 
-### Postman
-- Successfully tested POST endpoint.
-- JSON request accepted.
-- AI response received.
-- Story and test cases stored in SQLite.
+Enhanced the Story table to record the AI provider used.
 
-## Technologies Used
+New columns:
 
-- Python
-- FastAPI
-- Ollama (qwen2.5:3b)
-- SQLite
-- VS Code
-- Postman
+- provider_name
+- model_name
 
-## Status
+This allows tracking which AI model generated each set of test cases.
 
-✅ SQLite Integration Complete
+---
 
-✅ Database Persistence Complete
+# Postman Test
 
-✅ Postman Testing Complete
+*Endpoint*
 
-Next Phase:
-- Hugging Face Integration
-- LangChain Integration
+
+POST /generate_testcases
+
+
+*Request Body*
+
+json
+{
+    "requirements": "User Registration"
+}
+
+
+---
+
+# Output
+
+- AI provider selected dynamically
+- Test cases generated successfully
+- JSON response parsed
+- Test cases stored in SQLite
+- Story information stored with provider details
+
+---
+
+# Challenges Faced
+
+- Fixed FastAPI module import issue
+- Resolved Hugging Face token permission errors
+- Learned Hugging Face Fine-Grained Token permissions
+- Understood provider-specific response formats
+- Modified response parsing to support Hugging Face output
+
+---
+
+# Learning
+
+- Hugging Face Inference API
+- InferenceClient
+- Cloud-hosted LLM integration
+- Fine-Grained API Tokens
+- Dynamic provider selection using environment variables
+- Provider-specific response handling
+
+---
+
+# Next Steps
+
+- Integrate LangChain
+- Standardize response parsing across providers
+- Add support for additional LLM providers
+- Introduce common AI provider interface for better scalability
+
+---
+
+## Project Progress
+
+- ✅ Phase 1 – FastAPI Setup
+- ✅ Phase 2 – Ollama Integration
+- ✅ Phase 3 – Dynamic AI Provider Architecture
+- ✅ Phase 4 – Hugging Face Integration
+- 🚧 Phase 5 – LangChain Integration
 
 ## Author
 Reetika Srivastava
