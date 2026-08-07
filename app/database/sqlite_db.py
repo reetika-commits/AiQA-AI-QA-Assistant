@@ -55,6 +55,9 @@ def get_model_used():
         model_used=settings.OLLAMA_MODEL
     elif settings.AI_PROVIDER=="huggingface":
         model_used=settings.HF_MODEL
+    elif settings.AI_PROVIDER=="langchain":
+        model_used=settings.OLLAMA_MODEL
+
     return model_used
 
 def get_provider():

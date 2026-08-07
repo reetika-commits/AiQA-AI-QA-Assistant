@@ -6,7 +6,7 @@ import json
 client =InferenceClient(api_key=settings.HF_API_KEY)
 
 def generate_testcases(requirements):
-    print("inside huggingface Service")
+    #print("inside huggingface Service")
     prompt=create_prompt(requirements)
     response=client.chat_completion(
         model=settings.HF_MODEL,
@@ -16,6 +16,6 @@ def generate_testcases(requirements):
         }
         ],
     )
-    print(settings.HF_MODEL)
-    print(f"Char Responce---->{response}",flush=True)
+    #print(settings.HF_MODEL)
+    #print(f"Char Responce---->{response}",flush=True)
     return json.loads(response.choices[0].message.content)
