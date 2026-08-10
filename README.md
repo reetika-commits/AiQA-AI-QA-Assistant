@@ -1,19 +1,36 @@
-﻿# AiQA-AI-QA-Assistant
+﻿# 🤖 AiQA – AI-Powered QA Assistant
 
-AI-powered Test Case Generator for QA Engineers.
+## 📌 Overview
 
-# ✨ Hugging Face AI Provider Integration
+*AiQA* is an AI-powered QA assistant that generates software test cases from user requirements.
 
-## Overview
+The project combines *FastAPI, LLMs, LangChain, and SQLite* to create an extensible AI-based test case generation system.
 
-Added *Hugging Face* as the second AI provider for the AIQA Assistant.
+The application is designed with a *multi-provider architecture*, allowing different AI providers to be used without changing the API or database layer.
 
-The application now supports both *local* and *cloud* Large Language Models through a common service layer. AI providers can be switched by changing a single environment variable without modifying the application code.
+Currently supported:
 
+- Local LLM using *Ollama*
+- Cloud LLM using *Hugging Face Inference API*
+- *LangChain + ChatOllama*
+
+The long-term goal is to extend AiQA into an AI-powered testing assistant capable of understanding application features, inspecting live web applications, generating test cases, and eventually executing tests through browser automation.
+
+---
+
+# 🎯 Project Goal
+
+The goal of AiQA is to reduce the manual effort involved in creating software test cases.
+
+Instead of manually converting a requirement into multiple test scenarios, the user can provide a requirement such as:
+
+```text
+User Registration
 ---
 
 # Features
 
+- Added Langchain integration with ChatOllama
 - Added Hugging Face cloud integration
 - Created huggingface_service.py
 - Used huggingface_hub.InferenceClient
@@ -30,7 +47,7 @@ The application now supports both *local* and *cloud* Large Language Models thro
 # Environment Variables
 
 env
-AI_PROVIDER=huggingface
+AI_PROVIDER=langchain
 
 OLLAMA_MODEL=qwen2.5:3b
 
@@ -46,47 +63,47 @@ HF_MODEL=Qwen/Qwen3-Coder-30B-A3B-Instruct
 |----------|------|--------|
 | Ollama | Local LLM | ✅ Completed |
 | Hugging Face | Cloud LLM | ✅ Completed |
-| LangChain | Framework | 🚧 Coming Next |
+| LangChain | Framework | ✅ Completed |
 
 ---
 
 # Architecture
 
 
-API Request
-      │
-      ▼
-AI Service
-      │
-      ▼
-AI Provider Selection
-      │
- ┌────┴─────────────┐
- │                  │
- ▼                  ▼
-Ollama        Hugging Face
- │                  │
- └──────┬───────────┘
-        ▼
- JSON Response
-        ▼
-SQLite Database
+                        API Request
+                           │
+                           ▼
+                     FastAPI Route
+                           │
+                           ▼
+                      AI Service
+                           │
+             ┌─────────────┼─────────────┐
+             │             │             │
+             ▼             ▼             ▼
+          Ollama      Hugging Face   LangChain
+          Service       Service      + ChatOllama
+             │             │             │
+             └─────────────┼─────────────┘
+                           │
+                           ▼
+                     Prompt Builder
+                           │
+                           ▼
+                         LLM
+                           │
+                           ▼
+                    JSON Response
+                           │
+                           ▼
+                    Response Parsing
+                           │
+                           ▼
+                    SQLite Database
 
 
 ---
 
-# Database Updates
-
-Enhanced the Story table to record the AI provider used.
-
-New columns:
-
-- provider_name
-- model_name
-
-This allows tracking which AI model generated each set of test cases.
-
----
 
 # Postman Test
 
@@ -118,11 +135,7 @@ json
 
 # Challenges Faced
 
-- Fixed FastAPI module import issue
-- Resolved Hugging Face token permission errors
-- Learned Hugging Face Fine-Grained Token permissions
-- Understood provider-specific response formats
-- Modified response parsing to support Hugging Face output
+- Modified response parsing to support LAngchain output
 
 ---
 
@@ -139,10 +152,8 @@ json
 
 # Next Steps
 
-- Integrate LangChain
-- Standardize response parsing across providers
-- Add support for additional LLM providers
-- Introduce common AI provider interface for better scalability
+- Integrate LangAgent
+
 
 ---
 
@@ -152,7 +163,7 @@ json
 - ✅ Phase 2 – Ollama Integration
 - ✅ Phase 3 – Dynamic AI Provider Architecture
 - ✅ Phase 4 – Hugging Face Integration
-- 🚧 Phase 5 – LangChain Integration
+- ✅ Phase 5 – LangChain Integration
 
 ## Author
 Reetika Srivastava
