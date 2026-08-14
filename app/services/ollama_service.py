@@ -1,11 +1,9 @@
 from ollama import chat
 from app.config import settings
-from app.prompts.testcase_prompt import create_prompt 
 import json
 
-def generate_testcases(requirements):
+def generate_testcases(prompt):
     #print("inside Ollema Service")
-    prompt=create_prompt(requirements)
     response=chat(
         model=settings.OLLAMA_MODEL,
         messages=[{

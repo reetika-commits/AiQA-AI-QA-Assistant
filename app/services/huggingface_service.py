@@ -1,13 +1,11 @@
 from huggingface_hub import InferenceClient
 from app.config import settings
-from app.prompts.testcase_prompt import create_prompt
 import json
 
 client =InferenceClient(api_key=settings.HF_API_KEY)
 
-def generate_testcases(requirements):
+def generate_testcases(prompt):
     #print("inside huggingface Service")
-    prompt=create_prompt(requirements)
     response=client.chat_completion(
         model=settings.HF_MODEL,
         messages=[{

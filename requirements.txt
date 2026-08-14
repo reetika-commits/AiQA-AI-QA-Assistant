@@ -1,0 +1,18 @@
+# API
+fastapi
+uvicorn
+
+# Browser automation
+selenium
+
+# AI workflow and Ollama integrations
+langchain==1.3.14
+langchain-ollama==1.1.0
+langgraph
+ollama==0.6.2
+
+# Request, response, and workflow data models
+pydantic
+
+# File uploads
+python-multipart

@@ -3,7 +3,7 @@ from app.database.sqlite_db import sqlite_procedure
 import traceback
 
 
-def generate_testcases(requirements):
+def generate_testcases(prompt, requirement):
     try:
         #print("enter AI service")
         if settings.AI_PROVIDER=="ollama":
@@ -17,9 +17,9 @@ def generate_testcases(requirements):
             #log no AI provider specified
             provider = 0
   
-        respose_dict= provider(requirements)
+        respose_dict= provider(prompt)
         #print("response fetched")
-        sqlite_procedure(requirements,get_dict_for_sqlite(respose_dict))
+        sqlite_procedure(requirement,get_dict_for_sqlite(respose_dict))
         return respose_dict
     except Exception:
         traceback.print_exc()

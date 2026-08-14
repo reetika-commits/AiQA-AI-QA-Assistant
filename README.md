@@ -1,126 +1,65 @@
-﻿# 🤖 AiQA – AI-Powered QA Assistant
+﻿# AiQA – AI-Powered QA Automation Assistant
 
-## 📌 Overview
+AiQA is an AI-powered QA automation system that combines browser automation,
+vision-language models, LLMs and workflow orchestration to generate
+application-specific test cases.
 
-*AiQA* is an AI-powered QA assistant that generates software test cases from user requirements.
+## What it does
 
-The project combines *FastAPI, LLMs, LangChain, and SQLite* to create an extensible AI-based test case generation system.
+Given:
 
-The application is designed with a *multi-provider architecture*, allowing different AI providers to be used without changing the API or database layer.
+- Application URL
+- Feature screenshot
+- QA requirement
 
-Currently supported:
+AiQA:
 
-- Local LLM using *Ollama*
-- Cloud LLM using *Hugging Face Inference API*
-- *LangChain + ChatOllama*
+1. Opens the application and extracts page text + DOM.
+2. Uses a Vision-Language Model to identify the UI elements shown in the screenshot.
+3. Maps those elements to the actual DOM.
+4. Generates structured QA test cases using an LLM.
+5. Stores generated test cases in SQLite.
 
-The long-term goal is to extend AiQA into an AI-powered testing assistant capable of understanding application features, inspecting live web applications, generating test cases, and eventually executing tests through browser automation.
-
----
-
-# 🎯 Project Goal
-
-The goal of AiQA is to reduce the manual effort involved in creating software test cases.
-
-Instead of manually converting a requirement into multiple test scenarios, the user can provide a requirement such as:
+## Architecture
 
 ```text
-User Registration
----
-
-# Features
-
-- Added Langchain integration with ChatOllama
-- Added Hugging Face cloud integration
-- Created huggingface_service.py
-- Used huggingface_hub.InferenceClient
-- Added provider selection using AI_PROVIDER
-- Stored API key securely in .env
-- Configured model name through environment variables
-- Successfully generated test cases using Hugging Face hosted models
-- Saved generated test cases into SQLite database
-- Added provider tracking in Story table
-- Improved architecture for supporting multiple AI providers
-
----
-
-# Environment Variables
-
-env
-AI_PROVIDER=langchain
-
-OLLAMA_MODEL=qwen2.5:3b
-
-HF_API_KEY=your_huggingface_api_key
-HF_MODEL=Qwen/Qwen3-Coder-30B-A3B-Instruct
-
-
----
-
-# Supported AI Providers
-
-| Provider | Type | Status |
-|----------|------|--------|
-| Ollama | Local LLM | ✅ Completed |
-| Hugging Face | Cloud LLM | ✅ Completed |
-| LangChain | Framework | ✅ Completed |
-
----
-
-# Architecture
-
-
-                        API Request
-                           │
-                           ▼
-                     FastAPI Route
-                           │
-                           ▼
-                      AI Service
-                           │
-             ┌─────────────┼─────────────┐
-             │             │             │
-             ▼             ▼             ▼
-          Ollama      Hugging Face   LangChain
-          Service       Service      + ChatOllama
-             │             │             │
-             └─────────────┼─────────────┘
-                           │
-                           ▼
-                     Prompt Builder
-                           │
-                           ▼
-                         LLM
-                           │
-                           ▼
-                    JSON Response
-                           │
-                           ▼
-                    Response Parsing
-                           │
-                           ▼
-                    SQLite Database
-
-
----
-
-
-# Postman Test
-
-*Endpoint*
-
-
-POST /generate_testcases
-
-
-*Request Body*
-
-json
-{
-    "requirements": "User Registration"
-}
-
-
+User
+  │
+  ▼
+FastAPI Route
+  │
+  ▼
+QA Agent
+  │
+  ▼
+LangGraph
+  │
+  ├── Browser Node
+  │      └── Page Text + DOM
+  │
+  └── Vision Node
+         └── Screenshot + DOM
+                │
+                ▼
+          Qwen2.5-VL:3B
+                │
+                ▼
+          Relevant DOM
+                │
+                ▼
+          Prompt Builder
+                │
+                ▼
+           AIService
+                │
+                ▼
+           Qwen2.5:3B
+                │
+                ▼
+          Test Cases
+                │
+                ▼
+             SQLite
 ---
 
 # Output
@@ -133,37 +72,95 @@ json
 
 ---
 
-# Challenges Faced
+# Key Components
 
-- Modified response parsing to support LAngchain output
+BrowserService:
+Uses Selenium to open the application and collect:
+- Visible page text
+- Full DOM
 
----
+VisionService:
+Uses Qwen2.5-VL:3B to correlate the feature screenshot with the actual DOM and return only the relevant UI elements.
 
-# Learning
+LangGraph:
+Orchestrates the dependency between browser inspection and visual analysis, passing the DOM through graph state.
 
-- Hugging Face Inference API
-- InferenceClient
-- Cloud-hosted LLM integration
-- Fine-Grained API Tokens
-- Dynamic provider selection using environment variables
-- Provider-specific response handling
+AIService:
+Handles LLM-based test case generation using the selected AI provider.
 
----
-
-# Next Steps
-
-- Integrate LangAgent
-
+SQLite:
+Stores generated test cases and provides the foundation for future test-case retrieval.
 
 ---
 
-## Project Progress
+# Tech Stack
 
-- ✅ Phase 1 – FastAPI Setup
-- ✅ Phase 2 – Ollama Integration
-- ✅ Phase 3 – Dynamic AI Provider Architecture
-- ✅ Phase 4 – Hugging Face Integration
-- ✅ Phase 5 – LangChain Integration
+- Python
+- FastAPI
+- Seenium
+- Pytest
+- LangChain
+- LangGraph
+- Ollama
+- Qwen2.5:3B
+- Qwen2.5-VL:3B
+- Pydantic
+- SQLite
+
+---
+
+# Current Status
+
+- Browser inspection
+- DOM extraction
+- Screenshot analysis
+- Vision + DOM correlation
+- LangGraph workflow
+- LLM test case generation
+- SQLite persistence
+- End-to-end execution from main
+
+---
+
+## Next: RAG
+The next phase is Test Case Intelligence using RAG.
+The planned workflow:
+New Request
+    │
+    ▼
+Search Existing Test Cases
+    │
+    ├── Exact Match ──► Reuse
+    │
+    ├── Similar Match ─► Retrieve + Adapt
+    │
+    └── No Match ─────► Generate with LLM
+                              │
+                              ▼
+                           SQLite
+
+The goal is to reduce unnecessary LLM calls and reuse existing QA
+knowledge.
+Future versions may also use saved screenshots for duplicate/similarity
+detection.
+
+---
+
+## Running Locally
+- Create and activate a virtual environment:
+       python -m venv .venv
+       .venv\Scripts\activate
+
+- Install dependencies:
+       pip install -r requirements.txt
+
+- Make sure Ollama is running with:
+       qwen2.5:3b
+       qwen2.5vl:3b
+
+- Start the application using the project's FastAPI entry point.
+
+---
 
 ## Author
 Reetika Srivastava
