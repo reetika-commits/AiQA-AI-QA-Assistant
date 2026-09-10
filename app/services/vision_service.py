@@ -1,10 +1,9 @@
 from ollama import chat
 import json
 
-feature_image_path="app/sample_data/test_feature_images/saucedemo log in.png"
 
 class VisionService():
-    def analyze_feature(self,dom):
+    def analyze_feature(self,dom,image_path,requirement):
         print("inside vision Service")
         response = chat(
         model="qwen2.5vl:3b",
@@ -16,9 +15,11 @@ class VisionService():
 
             You will receive:
             1. A screenshot of a web application's feature.
-            2. The DOM/page source of the same live web application.
+            2. A compact representation of the DOM of the same live web application.
+            3. The current QA requirement describing what needs to be tested.
 
-            Your task is to identify the feature shown in the screenshot and find the corresponding UI elements in the provided DOM.
+            Your task is to identify the UI elements relevant to the CURRENT QA REQUIREMENT,
+            using the screenshot and compact DOM as evidence.
 
             Instructions:
 
@@ -32,14 +33,16 @@ class VisionService():
             - radio buttons
             - dropdowns
             - other controls
-            3. Use the DOM to locate the elements corresponding to those UI elements.
+            3. Use the provided compact DOM to locate the elements corresponding to those UI elements.
             4. Return ONLY the DOM elements that are relevant to the feature shown in the screenshot.
             5. Do not return the complete DOM.
             6. Do not include unrelated elements such as headers, footers, navigation, advertisements, or other page sections unless they are part of the displayed feature.
-            7. Prefer elements with useful identifiers such as id, name, class, aria-label, placeholder, or visible text.
-            8. If an element cannot be confidently matched with the DOM, do not invent a selector or DOM element. Mark it as "not_found".
-            9. Distinguish between a UI element and its value. For example, "standard_user" is a value entered into a username field; it is not the username field itself.
-            10. Return valid JSON only. Do not include explanations outside the JSON.
+            7. Prefer elements with useful identifiers such as id, name, class, aria-label, placeholder, onclick, or visible text.
+            8. When an element has visible text, preserve that text in the returned element description or DOM representation. Do not replace the visible
+            UI label with an event handler or semantic description.
+            9. If an element cannot be confidently matched with the DOM, do not invent a selector or DOM element. Mark it as "not_found".
+            10. Distinguish between a UI element and its value. For example, "standard_user" is a value entered into a username field; it is not the username field itself.
+            11. Return valid JSON only. Do not include explanations outside the JSON.
 
             Return the result in exactly this structure:
 
@@ -66,11 +69,24 @@ class VisionService():
                 "status": "not_found"
             }}
 
-            DOM:{dom}
-            """,
-                "images": [feature_image_path]
-            }
-        ],
+                DOM:{dom},
+                images: {image_path},
+                CURRENT QA REQUIREMENT:{requirement}
+            
+            IMPORTANT:
+            The CURRENT QA REQUIREMENT determines which functionality is relevant.
+
+            Do not select an element merely because it is visible in the screenshot.
+            Select elements that are relevant to fulfilling the CURRENT QA REQUIREMENT.
+
+            The "feature" field should describe the functionality relevant to the requirement.
+            Do not treat the feature description as the visible text of a UI element.
+            Use the actual DOM information for UI labels, attributes, and selectors.
+
+            The "dom" field should preserve the relevant information from the
+            compact DOM, including the element's visible text and useful attributes.
+            """
+        }],
         format="json"
     )
         print(f"VisionService---->{response}",flush=True)

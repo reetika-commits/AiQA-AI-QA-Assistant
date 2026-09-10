@@ -1,11 +1,12 @@
 from app.config import settings
-from app.database.sqlite_db import sqlite_procedure
+from app.database.sqlite_db import SQLiteDB
 import traceback
 
 
-def generate_testcases(prompt, requirement):
+def generate_testcases(prompt, requirement,embedding):
+    sql=SQLiteDB()
     try:
-        #print("enter AI service")
+        print("enter AI service")
         if settings.AI_PROVIDER=="ollama":
             from app.services.ollama_service import generate_testcases as provider
         elif settings.AI_PROVIDER=="huggingface":
@@ -18,8 +19,8 @@ def generate_testcases(prompt, requirement):
             provider = 0
   
         respose_dict= provider(prompt)
-        #print("response fetched")
-        sqlite_procedure(requirement,get_dict_for_sqlite(respose_dict))
+        print(f"response fetched->{respose_dict}")
+        sql.sqlite_procedure(requirement,get_dict_for_sqlite(respose_dict),embedding)
         return respose_dict
     except Exception:
         traceback.print_exc()

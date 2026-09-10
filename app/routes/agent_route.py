@@ -4,7 +4,21 @@ import traceback
 
 router = APIRouter()
 
+#### Remove this later
+# @router.post("/agent/test-features")
+# def call_agent(
+#     web_app_url: str = Form(...),
+#     feature_image: UploadFile = File(...),
+#     requirements: str = Form(...)
+# ):
+#     print("🔥🔥🔥 CALL_AGENT ENTERED 🔥🔥🔥", flush=True)
+#     return {
+#         "message": "route works",
+#         "url": web_app_url,
+#         "requirements": requirements
+#     }
 
+@router.post("/agent/test-features")
 @router.post("/agent/test-features")
 def call_agent(
     web_app_url: str = Form(...),
@@ -12,16 +26,19 @@ def call_agent(
     requirements: str = Form(...)
 ):
     try:
-        print("Route reached", flush=True)
-
         response = agent_generate_testcases(
             web_app_url,
             feature_image,
             requirements
         )
 
-        return response
+        return {
+            "checkpoint": "QA AGENT COMPLETED",
+            "response": response
+        }
 
     except Exception:
-        traceback.print_exc()
-        raise
+        return {
+            "checkpoint": "QA AGENT FAILED",
+            "error": traceback.format_exc()
+        }
