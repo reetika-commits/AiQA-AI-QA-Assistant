@@ -1,6 +1,5 @@
-from fastapi import APIRouter, UploadFile, File, Form
+from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from app.agents.qa_agent import agent_generate_testcases
-import traceback
 
 router = APIRouter()
 
@@ -19,7 +18,6 @@ router = APIRouter()
 #     }
 
 @router.post("/agent/test-features")
-@router.post("/agent/test-features")
 def call_agent(
     web_app_url: str = Form(...),
     feature_image: UploadFile = File(...),
@@ -37,8 +35,8 @@ def call_agent(
             "response": response
         }
 
-    except Exception:
-        return {
-            "checkpoint": "QA AGENT FAILED",
-            "error": traceback.format_exc()
-        }
+    except Exception as e:
+        raise HTTPException(
+        status_code=500,
+        detail="QA Agent failed"
+        ) from e

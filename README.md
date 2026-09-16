@@ -132,7 +132,7 @@ LangGraph is used to orchestrate the browser and visual analysis workflow.
 
 The graph currently contains:
 
-# Browser Node
+### Browser Node
 Uses Selenium through BrowserService to:
 - Open the application URL
 - Extract visible page text
@@ -152,7 +152,7 @@ The compact DOM reduces unnecessary HTML and provides useful information such as
 - Semantic parent context
 - Element state such as checked, disabled, required, and selected
 
-# Conditional Vision Node
+### Conditional Vision Node
 LangGraph determines whether visual analysis is required.
 
 Browser Node
@@ -173,7 +173,7 @@ This demonstrates conditional workflow execution rather than always invoking the
 
 ---
 
-## VisionService
+### VisionService
 When visual analysis is required, AiQA uses Qwen2.5-VL:3B.
 VisionService receives:
 - Feature screenshot
@@ -201,14 +201,14 @@ Example output:
 
 AiQA uses separate prompt-building paths depending on whether Vision analysis was required.
 
-# RAG Prompt
+### RAG Prompt
 Uses:
 - Current QA requirement
 - Current application UI
 - Retrieved historical test cases
 Historical test cases provide testing ideas and coverage, while the current application's UI is treated as the authoritative source for UI elements.
 
-# Vision Prompt
+### Vision Prompt
 Uses:
 - Current QA requirement
 - Vision-selected relevant DOM
@@ -219,13 +219,13 @@ This allows the final LLM to generate test cases using both visual/UI context an
 
 ## Key Components
 
-# BrowserService
+### BrowserService
 Uses Selenium to open the application and collect:
 - Visible page text
 - Full DOM
 - Compact QA-oriented DOM
 
-# RAGService
+### RAGService
 Handles:
 - Requirement embeddings
 - Semantic similarity
@@ -233,14 +233,13 @@ Handles:
 - Related test-case retrieval
 - Vision decision based on similarity
 
-# VisionService
+### VisionService
 Uses Qwen2.5-VL:3B to correlate:
 - Screenshot
 - Compact DOM
-- Current QA requirement
-and identify relevant UI elements.
+- Current QA requirement and identify relevant UI elements.
 
-# LangGraph
+### LangGraph
 Orchestrates the dependency between:
 - Browser inspection
 - Conditional Vision analysis
@@ -277,9 +276,8 @@ Stores application/story and historical test-case information used by the RAG wo
 - RAG
 - Cosine Similarity
 
----
 
-## Current Status
+### Current Status
 
 Implemented
 
@@ -334,6 +332,34 @@ Make sure Ollama is running with the required models:
 qwen2.5:3b
 qwen2.5vl:3b
 Start the application using the project's FastAPI entry point.
+
+---
+
+## Testing
+
+AiQA uses pytest for automated testing across the main application layers.
+
+### Test Coverage
+
+- Ollama service — mocked LLM response testing
+- AI service — provider and database interaction testing
+- RAGService — embedding, cosine similarity, similarity ranking,
+  top-2 retrieval, and Vision threshold testing
+- QA Agent — Vision and non-Vision orchestration paths
+- LangGraph — browser node, Vision node, conditional routing,
+  and compiled graph workflow
+- FastAPI — successful requests, request validation, file uploads,
+  and agent failure handling
+
+External dependencies such as Ollama, Selenium, VisionService, and
+database operations are mocked where appropriate to keep unit tests
+fast and deterministic.
+
+### Running Tests
+
+```bash
+pytest -v
+```
 
 ## Author
 Reetika Srivastava

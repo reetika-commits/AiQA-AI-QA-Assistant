@@ -62,7 +62,7 @@ def agent_generate_testcases(app_url, feature_image, requirements):
 
         # print(
         #     f"---- Inside qa_agent -> relevant_dom -> {result["relevant_dom"]}"
-        )
+        
 
         llm_response = generate_testcases(
             prompt,
