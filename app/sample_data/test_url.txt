@@ -1,1 +1,1 @@
-http://test-app.com
+https://practice.expandtesting.com/drag-and-drop

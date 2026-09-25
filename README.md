@@ -88,6 +88,8 @@ RAGService          Save URL / Image
                           ▼
                         SQLite
 
+LangSmith → tracing / observability of LangGraph execution
+
 ---
 
 ## RAG / Test Case Intelligence
@@ -275,6 +277,7 @@ Stores application/story and historical test-case information used by the RAG wo
 - Embeddings
 - RAG
 - Cosine Similarity
+- LangSmith – LLM/LangGraph tracing and observability
 
 
 ### Current Status
@@ -299,6 +302,17 @@ Implemented
 - LLM test-case generation
 - Dynamic AI provider selection
 - SQLite persistence
+
+The core AiQA workflow is implemented and tested with:
+
+- RAG-based historical test case retrieval
+- Selenium-based application/DOM inspection
+- Conditional LangGraph workflow
+- Vision-assisted UI analysis
+- LLM-based test case generation
+- Pytest unit testing and mocking
+- LangSmith tracing and observability
+- Git/GitHub and CI/CD
 
 ---
 
@@ -333,6 +347,23 @@ qwen2.5:3b
 qwen2.5vl:3b
 Start the application using the project's FastAPI entry point.
 
+---
+
+## LangSmith Observability
+
+LangSmith is integrated with AiQA for tracing and observability of the LangGraph workflow.
+
+It provides visibility into:
+- LangGraph execution
+- Node-level execution flow
+- Conditional routing
+- Graph inputs and outputs
+- Browser and Vision node execution
+- Execution timing
+
+Example traced workflow:
+
+Browser → route_after_browser → Vision
 ---
 
 ## Testing

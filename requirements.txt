@@ -22,3 +22,6 @@ pydantic
 
 # File uploads
 python-multipart
+
+# LLM observability / tracing
+langsmith
